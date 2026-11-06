@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Daylight — A little progress, every day. A soft pastel productivity life dashboard with clock, focus timer, to-do list, and quick links." />
+    <title>Daylight — A little progress, every day.</title>
+
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+    <!-- Prevent theme flash: apply saved theme before render -->
+    <script>
+        (function () {
+            try {
+                var theme = localStorage.getItem('daylight_theme') || 'light';
+                document.documentElement.setAttribute('data-theme', theme);
+            } catch (e) { /* default to light */ }
+        })();
+    </script>
+
+    <!-- Application Stylesheet -->
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+    <!-- ============================================================ -->
+    <!-- MOBILE NAVIGATION TOGGLE (hamburger)                          -->
+    <!-- ============================================================ -->
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <!-- Mobile overlay to close sidebar -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- ============================================================ -->
+    <!-- SIDEBAR NAVIGATION                                            -->
+    <!-- ============================================================ -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar__brand">
+            <div class="sidebar__logo" aria-hidden="true">
+                <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="14" cy="14" r="13" stroke="currentColor" stroke-width="1.6" />
+                    <path d="M14 6.5C10.5 6.5 8 9 8 12.5c0 4 6 9 6 9s6-5 6-9c0-3.5-2.5-6-6-6z" fill="currentColor" opacity="0.7"/>
+                </svg>
+            </div>
+            <div class="sidebar__brand-text">
+                <span class="sidebar__app-name">Daylight</span>
+                <span class="sidebar__tagline">A little progress, every day.</span>
+            </div>
+        </div>
+
+        <nav class="sidebar__nav" aria-label="Main navigation">
+            <button class="nav-item active" data-section="dashboard" aria-current="page">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+                <span>Dashboard</span>
+            </button>
+            <button class="nav-item" data-section="tasks">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                <span>My Tasks</span>
+            </button>
+            <button class="nav-item" data-section="timer">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M5 3 2 6"/><path d="M22 6l-3-3"/></svg>
+                <span>Focus Timer</span>
+            </button>
+            <button class="nav-item" data-section="links">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                <span>Quick Links</span>
+            </button>
+            <button class="nav-item" data-section="settings">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                <span>Settings</span>
+            </button>
+        </nav>
+
+        <div class="sidebar__footer">
+            <div class="sidebar__profile">
+                <div class="sidebar__avatar" id="sidebarAvatar">U</div>
+                <div class="sidebar__profile-info">
+                    <span class="sidebar__profile-name" id="sidebarProfileName">User</span>
+                    <span class="sidebar__profile-sub">Productivity mode</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ============================================================ -->
+    <!-- MAIN CONTENT                                                   -->
+    <!-- ============================================================ -->
+    <div class="main" id="main">
+        <!-- HEADER -->
+        <header class="header">
+            <div class="header__left">
+                <h1 class="header__title" id="headerGreeting">Good Morning</h1>
+                <span class="header__date" id="headerDate">—</span>
+            </div>
+            <div class="header__right">
+                <button class="icon-btn" id="themeToggle" aria-label="Toggle dark mode" title="Toggle theme">
+                    <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                    <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+                <button class="icon-btn" id="settingsShortcut" aria-label="Go to settings" title="Settings">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                </button>
+                <div class="header__profile" id="headerProfile">
+                    <div class="header__avatar" id="headerAvatar">U</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- ======================================================== -->
+        <!-- SECTIONS WRAPPER                                           -->
+        <!-- ======================================================== -->
+        <div class="sections" id="sections">
+
+            <!-- ==================================================== -->
+            <!-- DASHBOARD SECTION                                      -->
+            <!-- ==================================================== -->
+            <section class="section active" id="dashboard" aria-label="Dashboard">
+                <!-- Greeting Card -->
+                <div class="greeting-card">
+                    <div class="greeting-card__top">
+                        <div class="greeting-card__text">
+                            <h2 class="greeting-card__hello" id="greetingText">Good Morning</h2>
+                            <p class="greeting-card__name" id="greetingName">Welcome back</p>
+                            <p class="greeting-card__message" id="greetingMessage">A little progress, every day.</p>
+                        </div>
+                        <div class="greeting-card__clock">
+                            <span class="clock-time" id="clockTime">--:--:--</span>
+                            <span class="clock-date" id="clockDate">—</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dashboard widgets row -->
+                <div class="dashboard-grid">
+                    <!-- Task Summary Widget -->
+                    <div class="widget" data-nav="tasks" role="button" tabindex="0">
+                        <div class="widget__header">
+                            <span class="widget__label">My Tasks</span>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                        </div>
+                        <div class="widget__body">
+                            <span class="widget__big-number" id="widgetTaskRemaining">0</span>
+                            <span class="widget__sub">tasks remaining</span>
+                        </div>
+                        <div class="widget__progress">
+                            <div class="widget__progress-bar">
+                                <div class="widget__progress-fill" id="widgetTaskProgress" style="width: 0%"></div>
+                            </div>
+                            <span class="widget__progress-text" id="widgetTaskProgressText">0 / 0 done</span>
+                        </div>
+                    </div>
+
+                    <!-- Focus Timer Widget -->
+                    <div class="widget" data-nav="timer" role="button" tabindex="0">
+                        <div class="widget__header">
+                            <span class="widget__label">Focus Timer</span>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/></svg>
+                        </div>
+                        <div class="widget__body">
+                            <span class="widget__big-number" id="widgetTimerDisplay">25:00</span>
+                            <span class="widget__sub" id="widgetTimerStatus">Ready to focus</span>
+                        </div>
+                    </div>
+
+                    <!-- Quick Links Widget -->
+                    <div class="widget" data-nav="links" role="button" tabindex="0">
+                        <div class="widget__header">
+                            <span class="widget__label">Quick Links</span>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                        </div>
+                        <div class="widget__body">
+                            <span class="widget__big-number" id="widgetLinkCount">0</span>
+                            <span class="widget__sub">saved links</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dashboard: inline mini task list preview -->
+                <div class="card">
+                    <div class="card__header">
+                        <h3 class="card__title">Today at a glance</h3>
+                        <button class="btn btn--ghost btn--sm" data-nav="tasks">View all</button>
+                    </div>
+                    <div class="card__body">
+                        <div class="mini-tasks" id="miniTaskList">
+                            <p class="empty-mini">No tasks yet. Add one to get started.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dashboard: Quick Access shortcuts -->
+                <div class="card">
+                    <div class="card__header">
+                        <h3 class="card__title">Your Quick Access</h3>
+                        <button class="btn btn--ghost btn--sm" data-nav="links">Manage links</button>
+                    </div>
+                    <div class="card__body">
+                        <div class="quick-access-grid" id="quickAccessGrid" aria-label="Quick access shortcuts">
+                            <!-- Shortcuts rendered dynamically -->
+                        </div>
+                        <div class="empty-state" id="quickAccessEmpty">
+                            <div class="empty-state__icon">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                            </div>
+                            <p class="empty-state__title">No shortcuts yet</p>
+                            <p class="empty-state__text">Add your favorite websites!</p>
+                            <button class="btn btn--primary" data-nav="links" style="margin-top: 16px;">Add your first link</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================================================== -->
+            <!-- TASKS SECTION                                          -->
+            <!-- ==================================================== -->
+            <section class="section" id="tasks" aria-label="My Tasks">
+                <div class="card">
+                    <div class="card__header">
+                        <h3 class="card__title">My Tasks</h3>
+                        <div class="task-stats">
+                            <span class="task-stat">
+                                <span class="task-stat__num" id="statTotal">0</span>
+                                <span class="task-stat__label">Total</span>
+                            </span>
+                            <span class="task-stat">
+                                <span class="task-stat__num" id="statCompleted">0</span>
+                                <span class="task-stat__label">Done</span>
+                            </span>
+                            <span class="task-stat">
+                                <span class="task-stat__num" id="statRemaining">0</span>
+                                <span class="task-stat__label">Left</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Add task input -->
+                    <div class="task-input-row">
+                        <input
+                            type="text"
+                            class="task-input"
+                            id="taskInput"
+                            placeholder="Add a new task…"
+                            maxlength="200"
+                            aria-label="Add a new task"
+                        />
+                        <button class="btn btn--primary" id="addTaskBtn">Add</button>
+                    </div>
+
+                    <!-- Sorting controls -->
+                    <div class="task-controls">
+                        <div class="task-controls__left">
+                            <label class="task-controls__label" for="sortSelect">Sort by</label>
+                            <select class="select" id="sortSelect" aria-label="Sort tasks">
+                                <option value="default">Default order</option>
+                                <option value="az">Alphabetical A–Z</option>
+                                <option value="za">Alphabetical Z–A</option>
+                                <option value="pending">Pending first</option>
+                                <option value="completed">Completed first</option>
+                            </select>
+                        </div>
+                        <div class="task-progress-mini">
+                            <div class="task-progress-mini__bar">
+                                <div class="task-progress-mini__fill" id="taskProgressBar" style="width: 0%"></div>
+                            </div>
+                            <span class="task-progress-mini__text" id="taskProgressText">0%</span>
+                        </div>
+                    </div>
+
+                    <!-- Task list -->
+                    <ul class="task-list" id="taskList" aria-label="Task list">
+                        <!-- Tasks rendered dynamically -->
+                    </ul>
+
+                    <!-- Empty state -->
+                    <div class="empty-state" id="taskEmptyState">
+                        <div class="empty-state__icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                        </div>
+                        <p class="empty-state__title">No tasks yet</p>
+                        <p class="empty-state__text">Add your first task above to start organizing your day.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================================================== -->
+            <!-- TIMER SECTION                                          -->
+            <!-- ==================================================== -->
+            <section class="section" id="timer" aria-label="Focus Timer">
+                <div class="card timer-card">
+                    <div class="card__header">
+                        <h3 class="card__title">Focus Timer</h3>
+                        <span class="timer-mode" id="timerMode">Pomodoro</span>
+                    </div>
+                    <div class="card__body timer-body">
+                        <!-- Circular progress -->
+                        <div class="timer-ring-wrapper">
+                            <svg class="timer-ring" width="240" height="240" viewBox="0 0 240 240">
+                                <circle class="timer-ring__track" cx="120" cy="120" r="108" />
+                                <circle class="timer-ring__progress" cx="120" cy="120" r="108" id="timerRingProgress" />
+                            </svg>
+                            <div class="timer-ring__center">
+                                <span class="timer-display" id="timerDisplay">25:00</span>
+                                <span class="timer-status" id="timerStatus">Ready to start</span>
+                            </div>
+                        </div>
+
+                        <!-- Timer controls -->
+                        <div class="timer-controls">
+                            <button class="btn btn--primary" id="timerStartBtn">Start</button>
+                            <button class="btn btn--ghost" id="timerPauseBtn" disabled>Pause</button>
+                            <button class="btn btn--ghost" id="timerResetBtn">Reset</button>
+                        </div>
+
+                        <!-- Custom duration -->
+                        <div class="timer-duration">
+                            <label class="timer-duration__label" for="durationInput">Duration (minutes)</label>
+                            <div class="timer-duration__row">
+                                <input
+                                    type="number"
+                                    class="input"
+                                    id="durationInput"
+                                    min="1"
+                                    max="120"
+                                    value="25"
+                                    aria-label="Pomodoro duration in minutes"
+                                />
+                                <button class="btn btn--ghost btn--sm" id="applyDurationBtn">Apply</button>
+                            </div>
+                            <span class="timer-duration__hint">Range: 1–120 minutes</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================================================== -->
+            <!-- QUICK LINKS SECTION                                    -->
+            <!-- ==================================================== -->
+            <section class="section" id="links" aria-label="Quick Links">
+                <div class="card">
+                    <div class="card__header">
+                        <h3 class="card__title">Quick Links</h3>
+                        <span class="task-stat__label" id="linkCountLabel">0 saved</span>
+                    </div>
+
+                    <!-- Add link form -->
+                    <div class="link-form">
+                        <div class="link-form__row">
+                            <input
+                                type="text"
+                                class="input"
+                                id="linkNameInput"
+                                placeholder="Website name (e.g. GitHub)"
+                                maxlength="60"
+                                aria-label="Website name"
+                            />
+                            <input
+                                type="url"
+                                class="input"
+                                id="linkUrlInput"
+                                placeholder="https://example.com"
+                                aria-label="Website URL"
+                            />
+                            <button class="btn btn--primary" id="addLinkBtn">Add Link</button>
+                        </div>
+                    </div>
+
+                    <!-- Links grid -->
+                    <div class="links-grid" id="linksGrid" aria-label="Saved quick links">
+                        <!-- Links rendered dynamically -->
+                    </div>
+
+                    <!-- Empty state -->
+                    <div class="empty-state" id="linkEmptyState">
+                        <div class="empty-state__icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                        </div>
+                        <p class="empty-state__title">No quick links yet</p>
+                        <p class="empty-state__text">Add your favorite websites for one-click access.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================================================== -->
+            <!-- SETTINGS SECTION                                       -->
+            <!-- ==================================================== -->
+            <section class="section" id="settings" aria-label="Settings">
+                <div class="card settings-card">
+                    <div class="card__header">
+                        <h3 class="card__title">Settings</h3>
+                    </div>
+                    <div class="card__body">
+
+                        <!-- Profile / Username -->
+                        <div class="settings-group">
+                            <h4 class="settings-group__title">Display Name</h4>
+                            <p class="settings-group__desc">This name appears in your greeting and sidebar.</p>
+                            <div class="settings-group__row">
+                                <input
+                                    type="text"
+                                    class="input"
+                                    id="usernameInput"
+                                    placeholder="Your name"
+                                    maxlength="40"
+                                    aria-label="Display name"
+                                />
+                                <button class="btn btn--primary" id="saveUsernameBtn">Save</button>
+                            </div>
+                        </div>
+
+                        <div class="settings-divider"></div>
+
+                        <!-- Pomodoro Duration -->
+                        <div class="settings-group">
+                            <h4 class="settings-group__title">Pomodoro Duration</h4>
+                            <p class="settings-group__desc">Set your default focus session length (1–120 minutes).</p>
+                            <div class="settings-group__row">
+                                <input
+                                    type="number"
+                                    class="input"
+                                    id="settingsDurationInput"
+                                    min="1"
+                                    max="120"
+                                    aria-label="Pomodoro duration"
+                                />
+                                <button class="btn btn--primary" id="saveDurationBtn">Save</button>
+                            </div>
+                        </div>
+
+                        <div class="settings-divider"></div>
+
+                        <!-- Theme -->
+                        <div class="settings-group">
+                            <h4 class="settings-group__title">Appearance</h4>
+                            <p class="settings-group__desc">Switch between light and dark themes.</p>
+                            <div class="theme-options">
+                                <button class="theme-option" data-theme-choice="light">
+                                    <span class="theme-option__swatch theme-option__swatch--light"></span>
+                                    <span>Light</span>
+                                </button>
+                                <button class="theme-option" data-theme-choice="dark">
+                                    <span class="theme-option__swatch theme-option__swatch--dark"></span>
+                                    <span>Dark</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="settings-divider"></div>
+
+                        <!-- Data Management -->
+                        <div class="settings-group">
+                            <h4 class="settings-group__title">Data</h4>
+                            <p class="settings-group__desc">Clear all locally stored data. This cannot be undone.</p>
+                            <button class="btn btn--danger" id="clearDataBtn">Clear all data</button>
+                        </div>
+
+                        <div class="settings-divider"></div>
+
+                        <!-- About -->
+                        <div class="settings-group">
+                            <h4 class="settings-group__title">About</h4>
+                            <p class="settings-group__desc">Daylight — A little progress, every day.</p>
+                            <p class="settings-group__desc">A soft pastel productivity life dashboard. All data is stored locally in your browser.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- TOAST NOTIFICATIONS                                            -->
+    <!-- ============================================================ -->
+    <div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Application Script -->
+    <script src="js/script.js"></script>
+</body>
+</html>
