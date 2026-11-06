@@ -317,4 +317,4 @@ Microsoft Edge, dan Safari.
 1. Push repository ke GitHub.
 2. Buka **Settings → Pages**.
 3. Set source ke **Deploy from a branch**, branch `main`, folder `/ (root)`.
-4. Site akan tersedia di `https://<username>.github.io/<repo>/`.
+4. Site akan tersedia di `https://xenocide-kaslana.github.io/CodingCamp--2November26-RaffiKurniawan/`.
